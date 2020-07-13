@@ -12,33 +12,33 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.data.hbase")
 public class HbaseProperties {
 
-    private String quorum;
+    private String confDir;
 
-    private String rootDir;
+    private String ticketCache;
 
-    private String nodeParent;
+    private String user;
 
-    public String getQuorum() {
-        return quorum;
+    public String getConfDir() {
+        return confDir;
     }
 
-    public void setQuorum(String quorum) {
-        this.quorum = quorum;
+    public void setConfDir(String confDir) {
+        this.confDir = confDir;
     }
 
-    public String getRootDir() {
-        return rootDir;
+    public String getTicketCache() {
+        return ticketCache;
     }
 
-    public void setRootDir(String rootDir) {
-        this.rootDir = rootDir;
+    public void setTicketCache(String ticketCache) {
+        this.ticketCache = ticketCache;
     }
 
-    public String getNodeParent() {
-        return nodeParent;
+    public String getUser() {
+        return user;
     }
 
-    public void setNodeParent(String nodeParent) {
-        this.nodeParent = nodeParent;
+    public void setUser(String user) {
+        this.user = user;
     }
 }

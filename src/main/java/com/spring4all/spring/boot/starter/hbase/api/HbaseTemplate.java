@@ -4,7 +4,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.security.User;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -24,6 +26,7 @@ import java.util.concurrent.TimeUnit;
  * @author Costin Leau
  * @author Shaun Elliott
  */
+
 /**
  * JThink@JThink
  *
@@ -40,9 +43,28 @@ public class HbaseTemplate implements HbaseOperations {
 
     private volatile Connection connection;
 
-    public HbaseTemplate(Configuration configuration) {
+    private User user;
+
+    private volatile Admin admin;
+
+    // @Autowired
+    // private HbaseProperties hbaseProperties;
+
+    public HbaseTemplate(Configuration configuration, String user, String ticketCache) {
         this.setConfiguration(configuration);
         Assert.notNull(configuration, " a valid configuration is required");
+
+        try {
+            UserGroupInformation.setConfiguration(configuration);
+            UserGroupInformation.getUGIFromTicketCache(ticketCache, user);
+//            UserGroupInformation.loginUserFromKeytab("hbase/_HOST@TEST.COM", "/etc/krb5.keytab");
+            UserGroupInformation loginUser = UserGroupInformation.getLoginUser();
+            this.user = User.create(loginUser);
+            this.connection = ConnectionFactory.createConnection(configuration, this.user);
+            admin = this.connection.getAdmin();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -131,8 +153,7 @@ public class HbaseTemplate implements HbaseOperations {
                     byte[] family = Bytes.toBytes(familyName);
                     if (StringUtils.isNotBlank(qualifier)) {
                         get.addColumn(family, Bytes.toBytes(qualifier));
-                    }
-                    else {
+                    } else {
                         get.addFamily(family);
                     }
                 }
@@ -190,10 +211,6 @@ public class HbaseTemplate implements HbaseOperations {
         });
     }
 
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
     public Connection getConnection() {
         if (null == this.connection) {
             synchronized (this) {
@@ -210,6 +227,10 @@ public class HbaseTemplate implements HbaseOperations {
             }
         }
         return this.connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 
     public Configuration getConfiguration() {

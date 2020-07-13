@@ -2,6 +2,7 @@ package com.spring4all.spring.boot.starter.hbase.boot;
 
 import com.spring4all.spring.boot.starter.hbase.api.HbaseTemplate;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -22,9 +23,9 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnClass(HbaseTemplate.class)
 public class HbaseAutoConfiguration {
 
-    private static final String HBASE_QUORUM = "hbase.zookeeper.quorum";
-    private static final String HBASE_ROOTDIR = "hbase.rootdir";
-    private static final String HBASE_ZNODE_PARENT = "zookeeper.znode.parent";
+//    private static final String HBASE_QUORUM = "hbase.zookeeper.quorum";
+//    private static final String HBASE_ROOTDIR = "hbase.rootdir";
+//    private static final String HBASE_ZNODE_PARENT = "zookeeper.znode.parent";
 
 
     @Autowired
@@ -34,9 +35,13 @@ public class HbaseAutoConfiguration {
     @ConditionalOnMissingBean(HbaseTemplate.class)
     public HbaseTemplate hbaseTemplate() {
         Configuration configuration = HBaseConfiguration.create();
-        configuration.set(HBASE_QUORUM, this.hbaseProperties.getQuorum());
-        configuration.set(HBASE_ROOTDIR, hbaseProperties.getRootDir());
-        configuration.set(HBASE_ZNODE_PARENT, hbaseProperties.getNodeParent());
-        return new HbaseTemplate(configuration);
+
+        configuration.addResource(new Path(this.hbaseProperties.getConfDir(), "hbase-site.xml"));
+        configuration.addResource(new Path(this.hbaseProperties.getConfDir(), "core-site.xml"));
+
+//        configuration.set(HBASE_QUORUM, this.hbaseProperties.getQuorum());
+//        configuration.set(HBASE_ROOTDIR, hbaseProperties.getRootDir());
+//        configuration.set(HBASE_ZNODE_PARENT, hbaseProperties.getNodeParent());
+        return new HbaseTemplate(configuration, this.hbaseProperties.getUser(), this.hbaseProperties.getTicketCache());
     }
 }
