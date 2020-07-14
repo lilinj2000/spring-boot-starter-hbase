@@ -47,8 +47,6 @@ public class HbaseTemplate implements HbaseOperations {
 
     private volatile Admin admin;
 
-    // @Autowired
-    // private HbaseProperties hbaseProperties;
 
     public HbaseTemplate(Configuration configuration, String user, String ticketCache) {
         this.setConfiguration(configuration);
@@ -60,8 +58,8 @@ public class HbaseTemplate implements HbaseOperations {
 //            UserGroupInformation.loginUserFromKeytab("hbase/_HOST@TEST.COM", "/etc/krb5.keytab");
             UserGroupInformation loginUser = UserGroupInformation.getLoginUser();
             this.user = User.create(loginUser);
-            this.connection = ConnectionFactory.createConnection(configuration, this.user);
-            admin = this.connection.getAdmin();
+//            this.connection = ConnectionFactory.createConnection(configuration, this.user);
+//            admin = this.connection.getAdmin();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -219,7 +217,9 @@ public class HbaseTemplate implements HbaseOperations {
                         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(200, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
                         // init pool
                         poolExecutor.prestartCoreThread();
-                        this.connection = ConnectionFactory.createConnection(configuration, poolExecutor);
+//                        this.connection = ConnectionFactory.createConnection(configuration, poolExecutor);
+                        this.connection = ConnectionFactory.createConnection(configuration, poolExecutor, this.user);
+                        this.admin = this.connection.getAdmin();
                     } catch (IOException e) {
                         LOGGER.error("hbase connection资源池创建失败");
                     }
