@@ -14,9 +14,9 @@ public class HbaseProperties {
 
     private String confDir;
 
-//    private String ticketCache;
-//
-//    private String user;
+    private String ticketCache;
+
+    private String user;
 
     public String getConfDir() {
         return confDir;
@@ -26,19 +26,19 @@ public class HbaseProperties {
         this.confDir = confDir;
     }
 
-//    public String getTicketCache() {
-//        return ticketCache;
-//    }
-//
-//    public void setTicketCache(String ticketCache) {
-//        this.ticketCache = ticketCache;
-//    }
-//
-//    public String getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(String user) {
-//        this.user = user;
-//    }
+    public String getTicketCache() {
+        return ticketCache;
+    }
+
+    public void setTicketCache(String ticketCache) {
+        this.ticketCache = ticketCache;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 }

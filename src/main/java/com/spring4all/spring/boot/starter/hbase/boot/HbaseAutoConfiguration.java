@@ -42,6 +42,6 @@ public class HbaseAutoConfiguration {
 //        configuration.set(HBASE_QUORUM, this.hbaseProperties.getQuorum());
 //        configuration.set(HBASE_ROOTDIR, hbaseProperties.getRootDir());
 //        configuration.set(HBASE_ZNODE_PARENT, hbaseProperties.getNodeParent());
-        return new HbaseTemplate(configuration);
+        return new HbaseTemplate(configuration, this.hbaseProperties.getUser(), this.hbaseProperties.getTicketCache());
     }
 }

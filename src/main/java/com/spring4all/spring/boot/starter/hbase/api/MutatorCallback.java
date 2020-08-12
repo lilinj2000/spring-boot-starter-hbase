@@ -14,7 +14,6 @@ public interface MutatorCallback {
 
     /**
      * 使用mutator api to update put and delete
-     *
      * @param mutator
      * @throws Throwable
      */
