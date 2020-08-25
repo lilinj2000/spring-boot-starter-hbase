@@ -4,9 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.security.User;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -43,26 +41,26 @@ public class HbaseTemplate implements HbaseOperations {
 
     private volatile Connection connection;
 
-    private User user;
+//    private User user;
 
     private volatile Admin admin;
 
 
-    public HbaseTemplate(Configuration configuration, String user, String ticketCache) {
+    public HbaseTemplate(Configuration configuration) {
         this.setConfiguration(configuration);
         Assert.notNull(configuration, " a valid configuration is required");
 
-        try {
-            UserGroupInformation.setConfiguration(configuration);
-            UserGroupInformation.getUGIFromTicketCache(ticketCache, user);
+//        try {
+//            UserGroupInformation.setConfiguration(configuration);
+//            UserGroupInformation.getUGIFromTicketCache(ticketCache, user);
 //            UserGroupInformation.loginUserFromKeytab("hbase/_HOST@TEST.COM", "/etc/krb5.keytab");
-            UserGroupInformation loginUser = UserGroupInformation.getLoginUser();
-            this.user = User.create(loginUser);
+//            UserGroupInformation loginUser = UserGroupInformation.getLoginUser();
+//            this.user = User.create(loginUser);
 //            this.connection = ConnectionFactory.createConnection(configuration, this.user);
 //            admin = this.connection.getAdmin();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -218,7 +216,7 @@ public class HbaseTemplate implements HbaseOperations {
                         // init pool
                         poolExecutor.prestartCoreThread();
 //                        this.connection = ConnectionFactory.createConnection(configuration, poolExecutor);
-                        this.connection = ConnectionFactory.createConnection(configuration, poolExecutor, this.user);
+                        this.connection = ConnectionFactory.createConnection(configuration, poolExecutor);
                         this.admin = this.connection.getAdmin();
                     } catch (IOException e) {
                         LOGGER.error("hbase connection资源池创建失败");
