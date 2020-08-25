@@ -5,6 +5,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -216,6 +217,7 @@ public class HbaseTemplate implements HbaseOperations {
                         // init pool
                         poolExecutor.prestartCoreThread();
 //                        this.connection = ConnectionFactory.createConnection(configuration, poolExecutor);
+                        UserGroupInformation.setConfiguration(configuration);
                         this.connection = ConnectionFactory.createConnection(configuration, poolExecutor);
                         this.admin = this.connection.getAdmin();
                     } catch (IOException e) {
